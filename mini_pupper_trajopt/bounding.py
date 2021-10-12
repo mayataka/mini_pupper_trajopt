@@ -16,7 +16,6 @@ def create_bounding_ocp_solver(path_to_urdf=config.PATH_TO_URDF):
     robot = idocp.Robot(path_to_urdf, idocp.BaseJointType.FloatingBase, 
                         contact_frames, baumgarte_time_step)
 
-    # This example does not converge (the solution may not exit)
     dt = 0.005
     step_length = 0.005
     step_height = 0.025

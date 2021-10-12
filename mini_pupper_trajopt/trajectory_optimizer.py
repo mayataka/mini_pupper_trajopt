@@ -1,4 +1,4 @@
-from . import trotting, trotting_slow, pacing, bounding, jumping, config
+from . import trotting, trotting_slow, pacing, bounding, jumping, running, config
 import numpy as np
 import idocp
 
@@ -15,6 +15,8 @@ class TrajectoryOptimizer:
             self.ocp_solver, self.time_step = bounding.create_bounding_ocp_solver()
         elif gait_type == 'jumping':
             self.ocp_solver, self.time_step = jumping.create_jumping_ocp_solver()
+        elif gait_type == 'running':
+            self.ocp_solver, self.time_step = running.create_running_ocp_solver()
         self.gait_type = gait_type
         self.q = config.q_standing
         self.v = np.zeros(18)
@@ -24,11 +26,11 @@ class TrajectoryOptimizer:
         idocp.utils.benchmark.convergence(self.ocp_solver, self.t, self.q, 
                                           self.v, num_iteration)
 
-    def visualize(self):
+    def visualize(self, camera_tf_vec=[0.3, -2.5, -0.4], zoom=7.0):
         viewer = idocp.utils.TrajectoryViewer(path_to_urdf=config.PATH_TO_URDF, 
                                             base_joint_type=idocp.BaseJointType.FloatingBase,
                                             viewer_type='meshcat')
-        viewer.set_camera_transform_meshcat(camera_tf_vec=[0.3, -2.5, -0.4], zoom=7.0)
+        viewer.set_camera_transform_meshcat(camera_tf_vec=camera_tf_vec, zoom=zoom)
         viewer.display(self.time_step, self.ocp_solver.get_solution('q'))
 
     def get_state_trajectory(self):

@@ -2,8 +2,11 @@
 Purpose of this repository is to provide low-torque and low-impact trajectory for Mini-Pupper quadrupedal robot.
 
 # Requirements 
+- [Pinocchio](https://github.com/stack-of-tasks/pinocchio) 
 - [idocp](https://github.com/mayataka/idocp.git)
-First, install Pinocchio. Then install idocp at IDOCP_INSTALL_DIR
+
+First, install [Pinocchio](https://github.com/stack-of-tasks/pinocchio) by following the [instruction](https://stack-of-tasks.github.io/pinocchio/download.html). 
+Next, install [idocp](https://github.com/mayataka/idocp.git) at IDOCP_INSTALL_DIR as
 
 ```
 git clone https://github.com/mayataka/idocp & cd idocp
@@ -12,14 +15,10 @@ cmake .. -DCMAKE_BUILD_TYPE=Release -DOPTIMIZE_FOR_NATIVE=ON -DCMAKE_INSTALL_PRE
 make install -j4
 ```
 
-and add Python path as
+and modify Python path as
 
-
-
-- [meshcat-python](https://github.com/rdeits/meshcat-python.git)
-Install meshcat-python as 
 ```
-pip3 install meshcat-python
+export PYTHONPATH=IDOCP_INSTALL_DIR/lib/python3.8/site-packages:$PYTHONPATH 
 ```
 
-
+e.g., write it in `~/.bashrc`.
