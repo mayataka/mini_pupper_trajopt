@@ -1,0 +1,2 @@
+recursive-include mini_pupper_trajopt/mini_pupper_description *
+EOF
