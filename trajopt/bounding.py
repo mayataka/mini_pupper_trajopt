@@ -14,7 +14,7 @@ baumgarte_time_step = 0.04
 robot = idocp.Robot(path_to_urdf, idocp.BaseJointType.FloatingBase, 
                     contact_frames, baumgarte_time_step)
 
-# Thid does not converge (the solution may not exit)
+# This example does not converge (the solution may not exit)
 dt = 0.005
 step_length = 0.04
 step_height = 0.02
@@ -37,7 +37,7 @@ v_weight = np.array([100, 100, 100, 100, 100, 100,
                      1, 1, 1,
                      1, 1, 1])
 u_weight = np.full(robot.dimu(), 1.0e-01)
-qi_weight = np.array([1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 
+qi_weight = np.array([0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 
                       100, 100, 100, 
                       100, 100, 100,
                       100, 100, 100,
@@ -109,7 +109,7 @@ joint_position_upper  = idocp.JointPositionUpperLimit(robot)
 # joint_velocity_upper  = idocp.JointVelocityUpperLimit(robot)
 # joint_torques_lower   = idocp.JointTorquesLowerLimit(robot)
 # joint_torques_upper   = idocp.JointTorquesUpperLimit(robot)
-mu = 0.7
+mu = 1.5
 friction_cone         = idocp.FrictionCone(robot, mu)
 constraints.push_back(joint_position_lower)
 constraints.push_back(joint_position_upper)
@@ -191,5 +191,7 @@ num_iteration = 200
 idocp.utils.benchmark.convergence(ocp_solver, t, q, v, num_iteration)
 
 viewer = idocp.utils.TrajectoryViewer(path_to_urdf=path_to_urdf, 
-                                      base_joint_type=idocp.BaseJointType.FloatingBase)
-viewer.display(dt, ocp_solver.get_solution('q'), viewer='meshcat')
+                                      base_joint_type=idocp.BaseJointType.FloatingBase,
+                                      viewer_type='meshcat')
+viewer.set_camera_transform_meshcat(camera_tf_vec=[0.3, -2.5, -0.4], zoom=6.0)
+viewer.display(dt, ocp_solver.get_solution('q'))

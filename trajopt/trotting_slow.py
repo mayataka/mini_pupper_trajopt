@@ -16,7 +16,7 @@ robot = idocp.Robot(path_to_urdf, idocp.BaseJointType.FloatingBase,
 
 dt = 0.01
 step_length = 0.04
-step_height = 0.012
+step_height = 0.02
 period_swing = 0.1
 period_double_support = 0.02
 t0 = period_double_support 
@@ -193,5 +193,7 @@ num_iteration = 50
 idocp.utils.benchmark.convergence(ocp_solver, t, q, v, num_iteration)
 
 viewer = idocp.utils.TrajectoryViewer(path_to_urdf=path_to_urdf, 
-                                      base_joint_type=idocp.BaseJointType.FloatingBase)
-viewer.display(dt, ocp_solver.get_solution('q'), viewer='meshcat')
+                                      base_joint_type=idocp.BaseJointType.FloatingBase,
+                                      viewer_type='meshcat')
+viewer.set_camera_transform_meshcat(camera_tf_vec=[0.3, -2.5, -0.4], zoom=6.0)
+viewer.display(dt, ocp_solver.get_solution('q'))

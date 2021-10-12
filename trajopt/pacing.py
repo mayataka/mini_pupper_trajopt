@@ -190,5 +190,7 @@ num_iteration = 100
 idocp.utils.benchmark.convergence(ocp_solver, t, q, v, num_iteration)
 
 viewer = idocp.utils.TrajectoryViewer(path_to_urdf=path_to_urdf, 
-                                      base_joint_type=idocp.BaseJointType.FloatingBase)
-viewer.display(dt, ocp_solver.get_solution('q'), viewer='meshcat')
+                                      base_joint_type=idocp.BaseJointType.FloatingBase,
+                                      viewer_type='meshcat')
+viewer.set_camera_transform_meshcat(camera_tf_vec=[0.3, -2.5, -0.4], zoom=6.0)
+viewer.display(dt, ocp_solver.get_solution('q'))
