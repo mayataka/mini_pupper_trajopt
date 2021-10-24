@@ -1,0 +1,14 @@
+<package format="2">
+  <name>mini_pupper_description</name>
+  <version>1.0.0</version>
+  <description>
+    Trajectory optimizer of mini-pupper's gaits
+  </description>
+  <author>TODO</author>
+  <maintainer email="TODO@email.com" />
+  <license>BSD</license>
+  <exec_depend>robotoc</exec_depend>
+  <export>
+    <architecture_independent />
+  </export>
+</package>
