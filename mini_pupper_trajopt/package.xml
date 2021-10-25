@@ -1,5 +1,5 @@
 <package format="2">
-  <name>mini_pupper_description</name>
+  <name>mini_pupper_trajopt</name>
   <version>1.0.0</version>
   <description>
     Trajectory optimizer of mini-pupper's gaits

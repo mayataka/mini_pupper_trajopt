@@ -16,6 +16,8 @@ class RunningOCPSolverFactory:
         self.dt = 0.01
         self.t0 = 0.5
         self.cycle = 10
+        self.T = self.t0 + self.cycle*self.running_time + 2*self.dt
+        self.N = math.floor(self.T/self.dt) 
         self.nthreads = 4
 
 
@@ -29,6 +31,7 @@ class RunningOCPSolverFactory:
         robot = robotoc.Robot(self.path_to_urdf, robotoc.BaseJointType.FloatingBase, 
                               contact_frames, baumgarte_time_step)
 
+        # create the cost function
         cost = robotoc.CostFunction()
         q_standing = config.q_standing
         q_weight = np.array([0, 0, 0, 1.0, 1.0, 1.0, 
@@ -109,6 +112,7 @@ class RunningOCPSolverFactory:
         com_cost.set_q_weight(com_q_weight)
         cost.push_back(com_cost)
 
+        # create the constraints
         constraints           = robotoc.Constraints()
         joint_position_lower  = robotoc.JointPositionLowerLimit(robot)
         joint_position_upper  = robotoc.JointPositionUpperLimit(robot)
@@ -127,37 +131,32 @@ class RunningOCPSolverFactory:
         constraints.push_back(friction_cone)
         constraints.set_barrier(1.0e-01)
 
-        T = self.t0 + self.cycle*self.running_time + 2*self.dt
-        N = math.floor(T/self.dt) 
-        max_num_impulse_phase = 2*self.cycle
-
-        nthreads = 4
-        t = 0
-        ocp_solver = robotoc.OCPSolver(robot, cost, constraints, T, N, 
-                                       max_num_impulse_phase, nthreads)
+        # create the contact sequence
+        max_num_impulses = 2*self.cycle
+        contact_sequence = robotoc.ContactSequence(robot, max_num_impulses)
 
         contact_points = [q0_3d_LF, q0_3d_LH, q0_3d_RF, q0_3d_RH]
-        contact_status_initial = robot.create_contact_status()
-        contact_status_initial.activate_contacts([0, 1, 2, 3])
-        contact_status_initial.set_contact_points(contact_points)
-        ocp_solver.set_contact_status_uniformly(contact_status_initial)
+        contact_status_standing = robot.create_contact_status()
+        contact_status_standing.activate_contacts([0, 1, 2, 3])
+        contact_status_standing.set_contact_points(contact_points)
+        contact_sequence.init_contact_sequence(contact_status_standing)
 
         contact_status_front_swing = robot.create_contact_status()
         contact_status_front_swing.activate_contacts([1, 3])
         contact_status_front_swing.set_contact_points(contact_points)
-        ocp_solver.push_back_contact_status(contact_status_front_swing, self.t0)
+        contact_sequence.push_back(contact_status_front_swing, self.t0)
 
         contact_points[0][0] += 0.5 * self.step_length
         contact_points[2][0] += 0.5 * self.step_length
-        contact_status_initial.set_contact_points(contact_points)
-        ocp_solver.push_back_contact_status(contact_status_initial, 
-                                            self.t0+self.front_swing_time)
+        contact_status_standing.set_contact_points(contact_points)
+        contact_sequence.push_back(contact_status_standing, 
+                                   self.t0+self.front_swing_time)
 
         contact_status_hip_swing = robot.create_contact_status()
         contact_status_hip_swing.activate_contacts([0, 2])
         contact_status_hip_swing.set_contact_points(contact_points)
-        ocp_solver.push_back_contact_status(contact_status_hip_swing, 
-                                            self.t0+self.front_swing_time+self.flying_time)
+        contact_sequence.push_back(contact_status_hip_swing, 
+                                   self.t0+self.front_swing_time+self.flying_time)
 
         contact_points[1][0] += self.step_length
         contact_points[3][0] += self.step_length
@@ -166,10 +165,10 @@ class RunningOCPSolverFactory:
         for i in range(self.cycle-2):
             t1 = self.t0 + (i+1)*self.running_time
             contact_status_front_swing.set_contact_points(contact_points)
-            ocp_solver.push_back_contact_status(contact_status_front_swing, t1)
+            contact_sequence.push_back(contact_status_front_swing, t1)
 
             contact_status_flying.set_contact_points(contact_points)
-            ocp_solver.push_back_contact_status(contact_status_flying, 
+            contact_sequence.push_back(contact_status_flying, 
                                                 t1+self.front_swing_time)
 
             contact_points[0][0] += self.step_length
@@ -177,29 +176,32 @@ class RunningOCPSolverFactory:
             contact_points[1][0] += self.step_length
             contact_points[3][0] += self.step_length
             contact_status_hip_swing.set_contact_points(contact_points)
-            ocp_solver.push_back_contact_status(contact_status_hip_swing, 
-                                                t1+self.front_swing_time+self.flying_time)
+            contact_sequence.push_back(contact_status_hip_swing, 
+                                       t1+self.front_swing_time+self.flying_time)
 
         t1 = self.t0 + (self.cycle-1)*self.running_time
         contact_status_front_swing.set_contact_points(contact_points)
-        ocp_solver.push_back_contact_status(contact_status_front_swing, t1)
+        contact_sequence.push_back(contact_status_front_swing, t1)
 
         contact_status_flying.set_contact_points(contact_points)
-        ocp_solver.push_back_contact_status(contact_status_flying, 
-                                            t1+self.front_swing_time)
+        contact_sequence.push_back(contact_status_flying, t1+self.front_swing_time)
 
         contact_points[0][0] += self.step_length
         contact_points[2][0] += self.step_length
         contact_points[1][0] += 0.5 * self.step_length
         contact_points[3][0] += 0.5 * self.step_length
         contact_status_hip_swing.set_contact_points(contact_points)
-        ocp_solver.push_back_contact_status(contact_status_hip_swing, 
-                                            t1+self.front_swing_time+self.flying_time)
+        contact_sequence.push_back(contact_status_hip_swing, 
+                                   t1+self.front_swing_time+self.flying_time)
 
         t1 = self.t0 + self.cycle*self.running_time
-        contact_status_initial.set_contact_points(contact_points)
-        ocp_solver.push_back_contact_status(contact_status_initial, t1)
+        contact_status_standing.set_contact_points(contact_points)
+        contact_sequence.push_back(contact_status_standing, t1)
 
+        ocp_solver = robotoc.OCPSolver(robot, contact_sequence, cost, constraints, 
+                                       self.T, self.N, nthreads=self.nthreads)
+
+        t = 0.0
         q = q_standing
         v = np.zeros(robot.dimv())
 

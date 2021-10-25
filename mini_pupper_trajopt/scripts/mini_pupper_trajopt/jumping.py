@@ -20,6 +20,8 @@ class JumpingOCPSolverFactory:
         self.ground_time = 0.50
         self.dt = 0.005
         self.t0 = 0.
+        self.T = self.t0 + self.flying_time + 2*self.ground_time
+        self.N = math.floor(self.T/self.dt) 
         self.cycle = 10
         self.nthreads = 4
 
@@ -32,6 +34,8 @@ class JumpingOCPSolverFactory:
         baumgarte_time_step = 0.04
         robot = robotoc.Robot(self.path_to_urdf, robotoc.BaseJointType.FloatingBase, 
                               contact_frames, baumgarte_time_step)
+
+        # create the cost function
         cost = robotoc.CostFunction()
         q_standing = config.q_standing
         q_weight = np.array([0, 0, 0, 250000, 250000, 250000, 
@@ -93,6 +97,7 @@ class JumpingOCPSolverFactory:
         com_cost_landed.set_q_weight(np.full(3, 1.0e06))
         cost.push_back(com_cost_landed)
 
+        # create the constraints
         constraints           = robotoc.Constraints()
         joint_position_lower  = robotoc.JointPositionLowerLimit(robot)
         joint_position_upper  = robotoc.JointPositionUpperLimit(robot)
@@ -111,33 +116,32 @@ class JumpingOCPSolverFactory:
         constraints.push_back(friction_cone)
         constraints.set_barrier(1.0e-01)
 
-        T = self.t0 + self.flying_time + 2*self.ground_time
-        N = math.floor(T/self.dt) 
-        max_num_impulse_phase = 1
-
-        nthreads = 4
-        t = 0
-        ocp_solver = robotoc.OCPSolver(robot, cost, constraints, T, N, 
-                                       max_num_impulse_phase, nthreads)
+        # create the contact sequence
+        max_num_impulses = 1
+        contact_sequence = robotoc.ContactSequence(robot, max_num_impulses)
 
         contact_points = [q0_3d_LF, q0_3d_LH, q0_3d_RF, q0_3d_RH]
-        contact_status_initial = robot.create_contact_status()
-        contact_status_initial.activate_contacts([0, 1, 2, 3])
-        contact_status_initial.set_contact_points(contact_points)
-        ocp_solver.set_contact_status_uniformly(contact_status_initial)
+        contact_status_standing = robot.create_contact_status()
+        contact_status_standing.activate_contacts([0, 1, 2, 3])
+        contact_status_standing.set_contact_points(contact_points)
+        contact_sequence.init_contact_sequence(contact_status_standing)
 
         contact_status_flying = robot.create_contact_status()
-        ocp_solver.push_back_contact_status(contact_status_flying, 
-                                            self.t0+self.ground_time)
+        contact_sequence.push_back(contact_status_flying, 
+                                   self.t0+self.ground_time)
 
         contact_points[0][0] += self.jump_length
         contact_points[1][0] += self.jump_length
         contact_points[2][0] += self.jump_length
         contact_points[3][0] += self.jump_length
-        contact_status_initial.set_contact_points(contact_points)
-        ocp_solver.push_back_contact_status(contact_status_initial, 
-                                            self.t0+self.ground_time+self.flying_time)
+        contact_status_standing.set_contact_points(contact_points)
+        contact_sequence.push_back(contact_status_standing, 
+                                   self.t0+self.ground_time+self.flying_time)
 
+        ocp_solver = robotoc.OCPSolver(robot, contact_sequence, cost, constraints, 
+                                       self.T, self.N, nthreads=self.nthreads)
+
+        t = 0.0
         q = q_standing
         v = np.zeros(robot.dimv())
 

@@ -14,6 +14,8 @@ class PacingOCPSolverFactory:
         self.dt = 0.005
         self.t0 = self.support_time
         self.cycle = 10
+        self.T = self.t0 + self.cycle*(2*self.support_time+2*self.swing_time)
+        self.N = math.floor(self.T/self.dt) 
         self.nthreads = 4
 
     def create_ocp_solver(self):
@@ -25,8 +27,8 @@ class PacingOCPSolverFactory:
         baumgarte_time_step = 0.04
         robot = robotoc.Robot(self.path_to_urdf, robotoc.BaseJointType.FloatingBase, 
                               contact_frames, baumgarte_time_step)
-        print(robot)
 
+        # create the cost function
         cost = robotoc.CostFunction()
         q_standing = config.q_standing
         q_weight = np.array([0, 0, 0, 250000, 250000, 250000, 
@@ -47,8 +49,6 @@ class PacingOCPSolverFactory:
                             100, 100, 100])
         vi_weight = np.full(robot.dimv(), 100)
         dvi_weight = np.full(robot.dimv(), 1.0e-03) # penalty on the impulse change in the velocity
-        print('vi_weight: ', vi_weight)
-        print('dvi_weight: ', dvi_weight)
 
         config_cost = robotoc.ConfigurationSpaceCost(robot)
         config_cost.set_q_ref(q_standing)
@@ -107,6 +107,7 @@ class PacingOCPSolverFactory:
         com_cost.set_q_weight(np.full(3, 1.0e06))
         cost.push_back(com_cost)
 
+        # create the constraints
         constraints           = robotoc.Constraints()
         joint_position_lower  = robotoc.JointPositionLowerLimit(robot)
         joint_position_upper  = robotoc.JointPositionUpperLimit(robot)
@@ -125,62 +126,62 @@ class PacingOCPSolverFactory:
         constraints.push_back(friction_cone)
         constraints.set_barrier(1.0e-01)
 
-        T = self.t0 + self.cycle*(2*self.support_time+2*self.swing_time)
-        N = math.floor(T/self.dt) 
-        max_num_impulse_phase = 2*self.cycle
-
-        t = 0.0
-        ocp_solver = robotoc.OCPSolver(robot, cost, constraints, T, N, 
-                                       max_num_impulse_phase, self.nthreads)
+        # create the contact sequence
+        max_num_impulses = 2*self.cycle
+        contact_sequence = robotoc.ContactSequence(robot, max_num_impulses)
 
         contact_points = [q0_3d_LF, q0_3d_LH, q0_3d_RF, q0_3d_RH]
-        contact_status_initial = robot.create_contact_status()
-        contact_status_initial.activate_contacts([0, 1, 2, 3])
-        contact_status_initial.set_contact_points(contact_points)
-        ocp_solver.set_contact_status_uniformly(contact_status_initial)
+        contact_status_standing = robot.create_contact_status()
+        contact_status_standing.activate_contacts([0, 1, 2, 3])
+        contact_status_standing.set_contact_points(contact_points)
+        contact_sequence.init_contact_sequence(contact_status_standing)
 
-        contact_status_even = robot.create_contact_status()
-        contact_status_even.activate_contacts([0, 1])
-        contact_status_even.set_contact_points(contact_points)
-        ocp_solver.push_back_contact_status(contact_status_even, self.t0)
+        contact_status_rfrh_swing = robot.create_contact_status()
+        contact_status_rfrh_swing.activate_contacts([0, 1])
+        contact_status_rfrh_swing.set_contact_points(contact_points)
+        contact_sequence.push_back(contact_status_rfrh_swing, self.t0)
 
         contact_points[2][0] += 0.5 * self.step_length
         contact_points[3][0] += 0.5 * self.step_length
-        contact_status_initial.set_contact_points(contact_points)
-        ocp_solver.push_back_contact_status(contact_status_initial, self.t0+self.swing_time)
+        contact_status_standing.set_contact_points(contact_points)
+        contact_sequence.push_back(contact_status_standing, self.t0+self.swing_time)
 
-        contact_status_odd = robot.create_contact_status()
-        contact_status_odd.activate_contacts([2, 3])
-        contact_status_odd.set_contact_points(contact_points)
-        ocp_solver.push_back_contact_status(contact_status_odd, 
-                                            self.t0+self.swing_time+self.support_time)
+        contact_status_lflh_swing = robot.create_contact_status()
+        contact_status_lflh_swing.activate_contacts([2, 3])
+        contact_status_lflh_swing.set_contact_points(contact_points)
+        contact_sequence.push_back(contact_status_lflh_swing, 
+                                   self.t0+self.swing_time+self.support_time)
 
         contact_points[0][0] += self.step_length
         contact_points[1][0] += self.step_length
-        contact_status_initial.set_contact_points(contact_points)
-        ocp_solver.push_back_contact_status(contact_status_initial, 
-                                            self.t0+2*self.swing_time+self.support_time)
+        contact_status_standing.set_contact_points(contact_points)
+        contact_sequence.push_back(contact_status_standing, 
+                                   self.t0+2*self.swing_time+self.support_time)
 
         for i in range(self.cycle-1):
             t1 = self.t0 + (i+1)*(2*self.swing_time+2*self.support_time)
-            contact_status_even.set_contact_points(contact_points)
-            ocp_solver.push_back_contact_status(contact_status_even, t1)
+            contact_status_rfrh_swing.set_contact_points(contact_points)
+            contact_sequence.push_back(contact_status_rfrh_swing, t1)
 
             contact_points[2][0] += self.step_length
             contact_points[3][0] += self.step_length
-            contact_status_initial.set_contact_points(contact_points)
-            ocp_solver.push_back_contact_status(contact_status_initial, t1+self.swing_time)
+            contact_status_standing.set_contact_points(contact_points)
+            contact_sequence.push_back(contact_status_standing, t1+self.swing_time)
 
-            contact_status_odd.set_contact_points(contact_points)
-            ocp_solver.push_back_contact_status(contact_status_odd, 
-                                                t1+self.swing_time+self.support_time)
+            contact_status_lflh_swing.set_contact_points(contact_points)
+            contact_sequence.push_back(contact_status_lflh_swing, 
+                                       t1+self.swing_time+self.support_time)
 
             contact_points[0][0] += self.step_length
             contact_points[1][0] += self.step_length
-            contact_status_initial.set_contact_points(contact_points)
-            ocp_solver.push_back_contact_status(contact_status_initial, 
-                                                t1+2*self.swing_time+self.support_time)
+            contact_status_standing.set_contact_points(contact_points)
+            contact_sequence.push_back(contact_status_standing, 
+                                       t1+2*self.swing_time+self.support_time)
 
+        ocp_solver = robotoc.OCPSolver(robot, contact_sequence, cost, constraints, 
+                                       self.T, self.N, nthreads=self.nthreads)
+
+        t = 0.0
         q = q_standing
         v = np.zeros(robot.dimv())
 

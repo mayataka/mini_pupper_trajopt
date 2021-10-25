@@ -8,7 +8,7 @@ setup(
     author_email='katayama.25w@st.kyoto-u.ac.jp',
     platforms=['any'],
     license="MIT",
-    url='https://github.com/mayataka/mini-pupper-trajopt',
+    url='https://github.com/mayataka/mini_pupper_trajopt.git',
     package_data={'': ['mini_pupper_description']},
     include_package_data=True,
     packages=find_packages(),
