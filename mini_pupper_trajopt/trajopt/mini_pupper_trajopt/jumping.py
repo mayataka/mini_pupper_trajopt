@@ -31,7 +31,7 @@ class JumpingOCPSolverFactory:
         RF_foot_id = config.RF_foot_id
         RH_foot_id = config.RH_foot_id
         contact_frames = [LF_foot_id, LH_foot_id, RF_foot_id, RH_foot_id] 
-        baumgarte_time_step = 0.04
+        baumgarte_time_step = 0.01
         robot = robotoc.Robot(self.path_to_urdf, robotoc.BaseJointType.FloatingBase, 
                               contact_frames, baumgarte_time_step)
 

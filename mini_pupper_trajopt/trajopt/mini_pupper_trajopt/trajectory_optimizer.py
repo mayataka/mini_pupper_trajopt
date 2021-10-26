@@ -7,11 +7,6 @@ class TrajectoryOptimizer:
     def __init__(self, gait_type):
         if gait_type == 'trotting':
             self.ocp_solver_factory = trotting.TrottingOCPSolverFactory()
-        elif gait_type == 'trotting_slow':
-            self.ocp_solver_factory = trotting.TrottingOCPSolverFactory()
-            self.ocp_solver_factory.swing_time = 0.2
-            self.ocp_solver_factory.support_time = 0.02
-            self.ocp_solver_factory.support_time = 0.01
         elif gait_type == 'pacing':
             self.ocp_solver_factory = pacing.PacingOCPSolverFactory()
         elif gait_type == 'bounding':

@@ -4,11 +4,11 @@ import math
 from . import config
 
 
-class PacingOCPSolverFactory:
+class BoundingOCPSolverFactory:
     def __init__(self, path_to_urdf=config.PATH_TO_URDF):
         self.path_to_urdf = path_to_urdf 
-        self.step_length = 0.04
-        self.step_height = 0.02
+        self.step_length = 0.005
+        self.step_height = 0.025
         self.swing_time = 0.1
         self.support_time = 0.01
         self.dt = 0.005
@@ -18,13 +18,19 @@ class PacingOCPSolverFactory:
         self.N = math.floor(self.T/self.dt) 
         self.nthreads = 4
 
+    def get_one_cycle_stage_indices(self, cycle):
+        period = 2*self.support_time+2*self.swing_time
+        N_period = math.floor(period/self.dt)
+        N0 = math.floor(self.t0/self.dt)
+        return range(N0+N_period*cycle-1, N0+N_period*(cycle+1))
+
     def create_ocp_solver(self):
         LF_foot_id = config.LF_foot_id
         LH_foot_id = config.LH_foot_id
         RF_foot_id = config.RF_foot_id
         RH_foot_id = config.RH_foot_id
         contact_frames = [LF_foot_id, LH_foot_id, RF_foot_id, RH_foot_id] 
-        baumgarte_time_step = 0.04
+        baumgarte_time_step = 0.02
         robot = robotoc.Robot(self.path_to_urdf, robotoc.BaseJointType.FloatingBase, 
                               contact_frames, baumgarte_time_step)
 
@@ -68,8 +74,8 @@ class PacingOCPSolverFactory:
         q0_3d_RF = robot.frame_position(RF_foot_id)
         q0_3d_RH = robot.frame_position(RH_foot_id)
         LF_t0 = self.t0 + self.swing_time + self.support_time
-        LH_t0 = self.t0 + self.swing_time + self.support_time
-        RF_t0 = self.t0 
+        LH_t0 = self.t0
+        RF_t0 = self.t0 + self.swing_time + self.support_time
         RH_t0 = self.t0 
         LF_foot_ref = robotoc.PeriodicFootTrackRef(q0_3d_LF, self.step_length, self.step_height, 
                                                    LF_t0, self.swing_time, 
@@ -79,10 +85,10 @@ class PacingOCPSolverFactory:
                                                    self.swing_time+2*self.support_time, False)
         RF_foot_ref = robotoc.PeriodicFootTrackRef(q0_3d_RF, self.step_length, self.step_height, 
                                                    RF_t0, self.swing_time, 
-                                                   self.swing_time+2*self.support_time, True)
+                                                   self.swing_time+2*self.support_time, False)
         RH_foot_ref = robotoc.PeriodicFootTrackRef(q0_3d_RH, self.step_length, self.step_height, 
                                                    RH_t0, self.swing_time, 
-                                                   self.swing_time+2*self.support_time, True)
+                                                   self.swing_time+2*self.support_time, False)
         LF_cost = robotoc.TimeVaryingTaskSpace3DCost(robot, LF_foot_id, LF_foot_ref)
         LH_cost = robotoc.TimeVaryingTaskSpace3DCost(robot, LH_foot_id, LH_foot_ref)
         RF_cost = robotoc.TimeVaryingTaskSpace3DCost(robot, RF_foot_id, RF_foot_ref)
@@ -102,7 +108,7 @@ class PacingOCPSolverFactory:
         v_com_ref = np.zeros(3)
         v_com_ref[0] = 0.5 * self.step_length / self.swing_time
         com_ref = robotoc.PeriodicCoMRef(com_ref0, v_com_ref, self.t0, self.swing_time, 
-                                         self.support_time, True)
+                                         self.support_time, False)
         com_cost = robotoc.TimeVaryingCoMCost(robot, com_ref)
         com_cost.set_q_weight(np.full(3, 1.0e06))
         cost.push_back(com_cost)
@@ -136,44 +142,44 @@ class PacingOCPSolverFactory:
         contact_status_standing.set_contact_points(contact_points)
         contact_sequence.init_contact_sequence(contact_status_standing)
 
-        contact_status_rfrh_swing = robot.create_contact_status()
-        contact_status_rfrh_swing.activate_contacts([0, 1])
-        contact_status_rfrh_swing.set_contact_points(contact_points)
-        contact_sequence.push_back(contact_status_rfrh_swing, self.t0)
+        contact_status_lhrh_swing = robot.create_contact_status()
+        contact_status_lhrh_swing.activate_contacts([0, 2])
+        contact_status_lhrh_swing.set_contact_points(contact_points)
+        contact_sequence.push_back(contact_status_lhrh_swing, self.t0)
 
-        contact_points[2][0] += 0.5 * self.step_length
-        contact_points[3][0] += 0.5 * self.step_length
+        contact_points[1][0] += self.step_length
+        contact_points[3][0] += self.step_length
         contact_status_standing.set_contact_points(contact_points)
         contact_sequence.push_back(contact_status_standing, self.t0+self.swing_time)
 
-        contact_status_lflh_swing = robot.create_contact_status()
-        contact_status_lflh_swing.activate_contacts([2, 3])
-        contact_status_lflh_swing.set_contact_points(contact_points)
-        contact_sequence.push_back(contact_status_lflh_swing, 
+        contact_status_lfrf_swing = robot.create_contact_status()
+        contact_status_lfrf_swing.activate_contacts([1, 3])
+        contact_status_lfrf_swing.set_contact_points(contact_points)
+        contact_sequence.push_back(contact_status_lfrf_swing, 
                                    self.t0+self.swing_time+self.support_time)
 
         contact_points[0][0] += self.step_length
-        contact_points[1][0] += self.step_length
+        contact_points[2][0] += self.step_length
         contact_status_standing.set_contact_points(contact_points)
         contact_sequence.push_back(contact_status_standing, 
                                    self.t0+2*self.swing_time+self.support_time)
 
         for i in range(self.cycle-1):
             t1 = self.t0 + (i+1)*(2*self.swing_time+2*self.support_time)
-            contact_status_rfrh_swing.set_contact_points(contact_points)
-            contact_sequence.push_back(contact_status_rfrh_swing, t1)
+            contact_status_lhrh_swing.set_contact_points(contact_points)
+            contact_sequence.push_back(contact_status_lhrh_swing, t1)
 
-            contact_points[2][0] += self.step_length
+            contact_points[1][0] += self.step_length
             contact_points[3][0] += self.step_length
             contact_status_standing.set_contact_points(contact_points)
             contact_sequence.push_back(contact_status_standing, t1+self.swing_time)
 
-            contact_status_lflh_swing.set_contact_points(contact_points)
-            contact_sequence.push_back(contact_status_lflh_swing, 
+            contact_status_lfrf_swing.set_contact_points(contact_points)
+            contact_sequence.push_back(contact_status_lfrf_swing, 
                                        t1+self.swing_time+self.support_time)
 
             contact_points[0][0] += self.step_length
-            contact_points[1][0] += self.step_length
+            contact_points[2][0] += self.step_length
             contact_status_standing.set_contact_points(contact_points)
             contact_sequence.push_back(contact_status_standing, 
                                        t1+2*self.swing_time+self.support_time)
@@ -197,7 +203,7 @@ class PacingOCPSolverFactory:
 
 
 if __name__ == '__main__':
-    factory = PacingOCPSolverFactory()
+    factory = BoundingOCPSolverFactory()
     ocp_solver = factory.create_ocp_solver()
     q = config.q_standing
     v = np.zeros(18)
