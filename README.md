@@ -4,7 +4,7 @@ Purpose of this repository is to provide low-torque and low-impact trajectory fo
 <img src="https://raw.githubusercontent.com/wiki/mayataka/mini_pupper_trajopt/images/running.gif" width="800"> 
 
 
-# Requirements 
+## Requirements 
 - [Pinocchio](https://github.com/stack-of-tasks/pinocchio) 
 - [robotoc](https://github.com/mayataka/robotoc.git)
 
@@ -25,3 +25,12 @@ export PYTHONPATH=ROBOTOC_INSTALL_DIR/lib/python3.8/site-packages:$PYTHONPATH
 ```
 
 e.g., write it in `~/.bashrc`.
+
+
+## Running the trajectory optimizer
+In `mini_pupper_trajopt/trajopt` directory, you can run examples of the mini-pupper's gait optimization.
+You can change the gait parameters such as step length, step height, step timinigs, etc.
+It visualizes the solution trajectory and save the trajectory.
+
+## Deploying the trajectory to the mini-pupper controller
+TODO
