@@ -7,6 +7,7 @@ Purpose of this repository is to provide low-torque and low-impact trajectory fo
 ## Requirements 
 - [Pinocchio](https://github.com/stack-of-tasks/pinocchio) 
 - [robotoc](https://github.com/mayataka/robotoc.git)
+- [meshcat-python](https://github.com/rdeits/meshcat-python)
 
 First, install [Pinocchio](https://github.com/stack-of-tasks/pinocchio) by following the [instruction](https://stack-of-tasks.github.io/pinocchio/download.html). 
 Next, install [robotoc](https://github.com/mayataka/robotoc.git) at ROBOTOC_INSTALL_DIR as
@@ -25,6 +26,10 @@ export PYTHONPATH=ROBOTOC_INSTALL_DIR/lib/python3.8/site-packages:$PYTHONPATH
 ```
 
 e.g., write it in `~/.bashrc`.
+Finally, install [meshcat-python](https://github.com/rdeits/meshcat-python) as 
+```
+pip install meshcat
+```
 
 
 ## Running the trajectory optimizer
