@@ -13,7 +13,7 @@ class RunningOCPSolverFactory:
         self.hip_swing_time   = 0.13
         self.flying_time      = 0.07
         self.running_time     = self.front_swing_time + self.hip_swing_time + self.flying_time
-        self.dt = 0.01
+        self.dt = 0.005
         self.t0 = 0.5
         self.cycle = 10
         self.T = self.t0 + self.cycle*self.running_time + 2*self.dt

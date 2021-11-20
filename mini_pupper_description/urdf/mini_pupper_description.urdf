@@ -106,8 +106,8 @@
     <limit
       lower="-3.14"
       upper="3.14"
-      effort="0"
-      velocity="0" />
+      effort="3.0"
+      velocity="1.0" />
   </joint>
   <link
     name="lf2">
@@ -164,8 +164,8 @@
     <limit
       lower="-3.14"
       upper="3.14"
-      effort="0"
-      velocity="0" />
+      effort="3.0"
+      velocity="1.0" />
   </joint>
   <link
     name="lf3">
@@ -222,8 +222,8 @@
     <limit
       lower="-3.14"
       upper="3.14"
-      effort="0"
-      velocity="0" />
+      effort="3.0"
+      velocity="1.0" />
   </joint>
   <link
     name="lffoot">
@@ -333,8 +333,8 @@
     <limit
       lower="-3.14"
       upper="3.14"
-      effort="0"
-      velocity="0" />
+      effort="3.0"
+      velocity="1.0" />
   </joint>
   <link
     name="rf2">
@@ -391,8 +391,8 @@
     <limit
       lower="-3.14"
       upper="3.14"
-      effort="0"
-      velocity="0" />
+      effort="3.0"
+      velocity="1.0" />
   </joint>
   <link
     name="rf3">
@@ -449,8 +449,8 @@
     <limit
       lower="-3.14"
       upper="3.14"
-      effort="0"
-      velocity="0" />
+      effort="3.0"
+      velocity="1.0" />
   </joint>
   <link
     name="rffoot">
@@ -560,8 +560,8 @@
     <limit
       lower="-3.14"
       upper="3.14"
-      effort="0"
-      velocity="0" />
+      effort="3.0"
+      velocity="1.0" />
   </joint>
   <link
     name="lb2">
@@ -618,8 +618,8 @@
     <limit
       lower="-3.14"
       upper="3.14"
-      effort="0"
-      velocity="0" />
+      effort="3.0"
+      velocity="1.0" />
   </joint>
   <link
     name="lb3">
@@ -676,8 +676,8 @@
     <limit
       lower="-3.14"
       upper="3.14"
-      effort="0"
-      velocity="0" />
+      effort="3.0"
+      velocity="1.0" />
   </joint>
   <link
     name="lbfoot">
@@ -787,8 +787,8 @@
     <limit
       lower="-3.14"
       upper="3.14"
-      effort="0"
-      velocity="0" />
+      effort="3.0"
+      velocity="1.0" />
   </joint>
   <link
     name="rb2">
@@ -845,8 +845,8 @@
     <limit
       lower="-3.14"
       upper="3.14"
-      effort="0"
-      velocity="0" />
+      effort="3.0"
+      velocity="1.0" />
   </joint>
   <link
     name="rb3">
@@ -903,8 +903,8 @@
     <limit
       lower="-3.14"
       upper="3.14"
-      effort="0"
-      velocity="0" />
+      effort="3.0"
+      velocity="1.0" />
   </joint>
   <link
     name="rbfoot">

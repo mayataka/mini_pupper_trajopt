@@ -12,7 +12,8 @@ MiniPupperController::MiniPupperController()
   : joint_handlers_(),
     q_cmd_() {
   const std::string path_to_log
-      = ros::package::getPath("mini_pupper_trajopt") + "/rsc/trotting/q.log";
+      // = ros::package::getPath("mini_pupper_trajopt") + "/rsc/trotting/q.log";
+      = ros::package::getPath("mini_pupper_trajopt") + "/rsc/running/q.log";
   std::ifstream log;
   log.open(path_to_log);
   std::string line;
