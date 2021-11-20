@@ -7,8 +7,10 @@ trajopt.visualize()
 
 qs = trajopt.ocp_solver.get_solution('q')
 vs = trajopt.ocp_solver.get_solution('v')
+us = trajopt.ocp_solver.get_solution('u')
 mini_pupper_trajopt.logger.take_log(vars=qs, file_name='q', root_dir='rsc/pacing')
 mini_pupper_trajopt.logger.take_log(vars=vs, file_name='v', root_dir='rsc/pacing')
+mini_pupper_trajopt.logger.take_log(vars=us, file_name='u', root_dir='rsc/pacing')
 
 stages0 = trajopt.ocp_solver_factory.get_one_cycle_stage_indices(cycle=0)
 q_initial_cycle = [qs[i] for i in stages0] 

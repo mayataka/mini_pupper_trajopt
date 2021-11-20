@@ -39,7 +39,7 @@ Then the log file is generated at `mini_pupper_trajopt/rsc`.
 Note: this step is totally independent from ROS and Gazebo.
 
 ## Gazebo simulation
-TODO
+Under development
 
 <!-- 
 ## Deploying the trajectory to the mini-pupper controller
