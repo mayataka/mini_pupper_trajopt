@@ -38,7 +38,10 @@ Then the log file is generated at `mini_pupper_trajopt/rsc`.
 
 Note: this step is totally independent from ROS and Gazebo.
 
+## Gazebo simulation
+TODO
 
+<!-- 
 ## Deploying the trajectory to the mini-pupper controller
 After generating the log file of the optimized trajecotory, you can install the log file via `catkin_make` in your workspace.
 
@@ -46,4 +49,4 @@ After generating the log file of the optimized trajecotory, you can install the 
 1. Install `Pinocchio`, `robotoc`, and `meshcat-python`.
 2. Run `python3 running.py` at `mini_pupper_trajopt` directory.
 3. Run `catkin_make` at ROS workspace.
-4. Launch Gazebo simulation as `roslaunch mini_pupper_gazebo mini_pupper.launch`
+4. Launch Gazebo simulation as `roslaunch mini_pupper_gazebo mini_pupper.launch` -->
