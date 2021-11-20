@@ -1,14 +1,12 @@
+<?xml version="1.0"?>
 <package format="2">
   <name>mini_pupper_trajopt</name>
   <version>1.0.0</version>
-  <description>
-    Trajectory optimizer of mini-pupper's gaits
-  </description>
+  <description>Trajectory optimizer of mini-pupper's gaits</description>
   <author>TODO</author>
   <maintainer email="TODO@email.com" />
-  <license>BSD</license>
+  <license>Apache 2.0</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
   <exec_depend>robotoc</exec_depend>
-  <export>
-    <architecture_independent />
-  </export>
 </package>

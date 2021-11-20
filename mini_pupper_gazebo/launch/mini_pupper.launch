@@ -1,0 +1,42 @@
+<launch>
+  <include
+    file="$(find gazebo_ros)/launch/empty_world.launch" />
+  <node
+    name="tf_footprint_base"
+    pkg="tf"
+    type="static_transform_publisher"
+    args="0 0 0.5 0 0 0 base_link base_footprint 40" />
+
+  <param name="robot_description"
+    command="$(find xacro)/xacro --inorder '$(find mini_pupper_description)/urdf/mini_pupper_description.urdf'"
+    />
+  <node
+    name="spawn_model"
+    pkg="gazebo_ros"
+    type="spawn_model"
+    args="-urdf -model mini_pupper -param robot_description -x 0.0 -y 0.0 -z 0.064"
+    output="screen" />
+  <node
+    name="fake_joint_calibration"
+    pkg="rostopic"
+    type="rostopic"
+    args="pub /calibrated std_msgs/Bool true" />
+
+
+  <group ns="/mini_pupper">
+    <rosparam file="$(find mini_pupper_gazebo)/config/mini_pupper_gazebo_controller.yaml" command="load"/>
+    <rosparam file="$(find mini_pupper_controller)/config/mini_pupper_controller.yaml" command="load"/>
+    <node name="controller_spawner"
+          pkg="controller_manager"
+          type="spawner" 
+          respawn="false"
+          output="screen"
+          args="joint_state_controller
+                mini_pupper_controller"/>
+  </group>
+  <node name="robot_state_publisher" pkg="robot_state_publisher" 
+      type="robot_state_publisher" respawn="false" output="screen">
+    <remap from="/joint_states" to="/mini_pupper/joint_states" />
+  </node>
+
+</launch>

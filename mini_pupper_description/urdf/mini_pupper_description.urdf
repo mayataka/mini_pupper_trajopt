@@ -4,6 +4,13 @@
      For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
 <robot
   name="mini_pupper_description">
+  <!-- Base is needed to avoid warning -->
+  <link name="base_dummy"> 
+   </link>
+  <joint name="dummy_joint" type="fixed">
+     <parent link="base_dummy"/>
+     <child link="base_link"/>
+   </joint>
   <link
     name="base_link">
     <inertial>
@@ -952,4 +959,183 @@
     <axis
       xyz="0 0 0" />
   </joint>
+  <!-- ros_control plugin -->
+  <gazebo>
+    <plugin filename="libgazebo_ros_control.so" name="gazebo_ros_control">
+      <robotNamespace>/mini_pupper</robotNamespace>
+      <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+    </plugin>
+  </gazebo>
+  <transmission name="base_lf1_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="base_lf1">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="base_lf1_motor">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="lf1_lf2_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="lf1_lf2">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="lf1_lf2_motor">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="lf2_lf3_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="lf2_lf3">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="lf2_lf3_motor">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="base_rf1_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="base_rf1">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="base_rf1_motor">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="rf1_rf2_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="rf1_rf2">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="rf1_rf2_motor">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="rf2_rf3_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="rf2_rf3">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="rf2_rf3_motor">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="base_lb1_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="base_lb1">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="base_lb1_motor">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="lb1_lb2_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="lb1_lb2">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="lb1_lb2_motor">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="lb2_lb3_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="lb2_lb3">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="lb2_lb3_motor">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="base_rb1_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="base_rb1">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="base_rb1_motor">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="rb1_rb2_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="rb1_rb2">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="rb1_rb2_motor">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="rb2_rb3_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="rb2_rb3">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="rb2_rb3_motor">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <!-- coloring Gazebo model -->
+  <gazebo reference="base_link">
+    <material>Gazebo/Yellow</material>
+  </gazebo>
+  <gazebo reference="lf1">
+    <material>Gazebo/Yellow</material>
+  </gazebo>
+  <gazebo reference="lf2">
+    <material>Gazebo/Yellow</material>
+  </gazebo>
+  <gazebo reference="lf3">
+    <material>Gazebo/Black</material>
+  </gazebo>
+  <gazebo reference="lffoot">
+    <material>Gazebo/Black</material>
+  </gazebo>
+  <gazebo reference="rf1">
+    <material>Gazebo/Yellow</material>
+  </gazebo>
+  <gazebo reference="rf2">
+    <material>Gazebo/Yellow</material>
+  </gazebo>
+  <gazebo reference="rf3">
+    <material>Gazebo/Black</material>
+  </gazebo>
+  <gazebo reference="rffoot">
+    <material>Gazebo/Black</material>
+  </gazebo>
+  <gazebo reference="lb1">
+    <material>Gazebo/Yellow</material>
+  </gazebo>
+  <gazebo reference="lb2">
+    <material>Gazebo/Yellow</material>
+  </gazebo>
+  <gazebo reference="lb3">
+    <material>Gazebo/Black</material>
+  </gazebo>
+  <gazebo reference="lbfoot">
+    <material>Gazebo/Black</material>
+  </gazebo>
+  <gazebo reference="rb1">
+    <material>Gazebo/Yellow</material>
+  </gazebo>
+  <gazebo reference="rb2">
+    <material>Gazebo/Yellow</material>
+  </gazebo>
+  <gazebo reference="rb3">
+    <material>Gazebo/Black</material>
+  </gazebo>
+  <gazebo reference="rbfoot">
+    <material>Gazebo/Black</material>
+  </gazebo>
 </robot>

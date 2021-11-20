@@ -15,6 +15,8 @@ for mini_pupper_description robot</p>
   <depend>rviz</depend>
   <depend>joint_state_publisher_gui</depend>
   <depend>gazebo</depend>
+  <depend>gazebo_plugins</depend>
+  <depend>gazebo_ros_control</depend>
   <export>
     <architecture_independent />
   </export>
