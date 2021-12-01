@@ -9,7 +9,7 @@ class TrottingOCPSolverFactory:
         self.path_to_urdf = path_to_urdf 
         self.step_length = 0.04
         self.step_height = 0.02
-        self.swing_time = 0.1
+        self.swing_time = 0.3
         self.support_time = 0.01
         self.dt = 0.005
         self.t0 = self.support_time

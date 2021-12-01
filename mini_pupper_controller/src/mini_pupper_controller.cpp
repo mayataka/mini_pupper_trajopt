@@ -12,8 +12,8 @@ MiniPupperController::MiniPupperController()
   : joint_handlers_(),
     q_cmd_() {
   const std::string path_to_log
-      // = ros::package::getPath("mini_pupper_trajopt") + "/rsc/trotting/q.log";
-      = ros::package::getPath("mini_pupper_trajopt") + "/rsc/running/q.log";
+      = ros::package::getPath("mini_pupper_trajopt") + "/rsc/trotting/q.log";
+      // = ros::package::getPath("mini_pupper_trajopt") + "/rsc/running/q.log";
   std::ifstream log;
   log.open(path_to_log);
   std::string line;
@@ -35,10 +35,10 @@ bool MiniPupperController::init(
     hardware_interface::PositionJointInterface* hardware, 
     ros::NodeHandle& node_handle) {
   const std::vector<std::string> joint_names = {
-      "base_lf1", "lf1_lf2", "lf2_lf3", 
-      "base_rf1", "rf1_rf2", "rf2_rf3", 
       "base_lb1", "lb1_lb2", "lb2_lb3", 
-      "base_rb1", "rb1_rb2", "rb2_rb3"};
+      "base_lf1", "lf1_lf2", "lf2_lf3", 
+      "base_rb1", "rb1_rb2", "rb2_rb3",
+      "base_rf1", "rf1_rf2", "rf2_rf3"};
   if (!joint_handlers_.empty()) {
     return false;
   }
