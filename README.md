@@ -33,20 +33,18 @@ pip install meshcat
 
 
 ## Running the trajectory optimizer
-In `mini_pupper_trajopt` directory, you can run the mini-pupper's gait optimization, e.g., via `python3 running.py`.
-Then the log file is generated at `mini_pupper_trajopt/rsc`.
+In `mini_pupper_trajopt` directory, you can run the mini-pupper's gait optimization, e.g., via `python3 troting.py`.
+Then the log file is generated at `mini_pupper_trajopt/rsc`, e.g., `mini_pupper_trajopt/rsc/trotting/q.log`.
 
 Note: this step is totally independent from ROS and Gazebo.
 
-## Gazebo simulation
-TODO
 
-<!-- 
 ## Deploying the trajectory to the mini-pupper controller
 After generating the log file of the optimized trajecotory, you can install the log file via `catkin_make` in your workspace.
+That is, `catkin_make` command also installs `mini_pupper_trajopt/rsc/trotting/q.log`.
 
 ## Summary for the Gazebo simulation
 1. Install `Pinocchio`, `robotoc`, and `meshcat-python`.
 2. Run `python3 running.py` at `mini_pupper_trajopt` directory.
-3. Run `catkin_make` at ROS workspace.
-4. Launch Gazebo simulation as `roslaunch mini_pupper_gazebo mini_pupper.launch` -->
+3. Run `catkin_make` at ROS workspace. This command also installs generated trajectory files, e.g., `mini_pupper_trajopt/rsc/trotting/q.log`.
+4. Launch Gazebo simulation as `roslaunch mini_pupper_gazebo mini_pupper.launch`

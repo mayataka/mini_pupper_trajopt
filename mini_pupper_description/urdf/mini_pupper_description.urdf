@@ -1105,6 +1105,8 @@
     <kd>1.0</kd>
     <mu1>0.8</mu1>    
     <mu2>0.8</mu2>  
+    <minDepth>0.002</minDepth>
+    <maxVel>0</maxVel>
   </gazebo>
   <gazebo reference="rf1">
     <material>Gazebo/Yellow</material>
@@ -1118,9 +1120,11 @@
   <gazebo reference="rffoot">
     <material>Gazebo/Black</material>
     <kp>1000000.0</kp>    
-    <kd>1.0</kd>    
+    <kd>1.0</kd>
     <mu1>0.8</mu1>    
     <mu2>0.8</mu2>  
+    <minDepth>0.002</minDepth>
+    <maxVel>0</maxVel>
   </gazebo>
   <gazebo reference="lb1">
     <material>Gazebo/Yellow</material>
@@ -1134,9 +1138,11 @@
   <gazebo reference="lbfoot">
     <material>Gazebo/Black</material>
     <kp>1000000.0</kp>    
-    <kd>1.0</kd>    
+    <kd>1.0</kd>
     <mu1>0.8</mu1>    
     <mu2>0.8</mu2>  
+    <minDepth>0.002</minDepth>
+    <maxVel>0</maxVel>
   </gazebo>
   <gazebo reference="rb1">
     <material>Gazebo/Yellow</material>
@@ -1150,8 +1156,10 @@
   <gazebo reference="rbfoot">
     <material>Gazebo/Black</material>
     <kp>1000000.0</kp>    
-    <kd>1.0</kd>    
+    <kd>1.0</kd>
     <mu1>0.8</mu1>    
     <mu2>0.8</mu2>  
+    <minDepth>0.002</minDepth>
+    <maxVel>0</maxVel>
   </gazebo>
 </robot>

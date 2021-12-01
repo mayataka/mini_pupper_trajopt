@@ -2,7 +2,7 @@ import mini_pupper_trajopt
 
 
 trajopt = mini_pupper_trajopt.TrajectoryOptimizer('trotting')
-trajopt.solve(num_iteration=50)
+trajopt.solve(num_iteration=20)
 trajopt.visualize()
 
 qs = trajopt.ocp_solver.get_solution('q')
