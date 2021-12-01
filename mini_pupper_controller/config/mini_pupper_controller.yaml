@@ -16,4 +16,4 @@ mini_pupper_controller:
     - rb2_rb3
   constraints:
     goal_time: 0.0
-    stopped_velocity_tolerance: 1.0
+    stopped_velocity_tolerance: 10.0
