@@ -108,6 +108,7 @@
       upper="3.14"
       effort="10.0"
       velocity="10.0" />
+    <dynamics damping="0.0" friction="0.1"/>
   </joint>
   <link
     name="lf2">
@@ -166,6 +167,7 @@
       upper="3.14"
       effort="10.0"
       velocity="10.0" />
+    <dynamics damping="0.0" friction="0.1"/>
   </joint>
   <link
     name="lf3">
@@ -224,6 +226,7 @@
       upper="3.14"
       effort="10.0"
       velocity="10.0" />
+    <dynamics damping="0.0" friction="0.1"/>
   </joint>
   <link
     name="lffoot">
@@ -335,6 +338,7 @@
       upper="3.14"
       effort="10.0"
       velocity="10.0" />
+    <dynamics damping="0.0" friction="0.1"/>
   </joint>
   <link
     name="rf2">
@@ -393,6 +397,7 @@
       upper="3.14"
       effort="10.0"
       velocity="10.0" />
+    <dynamics damping="0.0" friction="0.1"/>
   </joint>
   <link
     name="rf3">
@@ -451,6 +456,7 @@
       upper="3.14"
       effort="10.0"
       velocity="10.0" />
+    <dynamics damping="0.0" friction="0.1"/>
   </joint>
   <link
     name="rffoot">
@@ -562,6 +568,7 @@
       upper="3.14"
       effort="10.0"
       velocity="10.0" />
+    <dynamics damping="0.0" friction="0.1"/>
   </joint>
   <link
     name="lb2">
@@ -620,6 +627,7 @@
       upper="3.14"
       effort="10.0"
       velocity="10.0" />
+    <dynamics damping="0.0" friction="0.1"/>
   </joint>
   <link
     name="lb3">
@@ -678,6 +686,7 @@
       upper="3.14"
       effort="10.0"
       velocity="10.0" />
+    <dynamics damping="0.0" friction="0.1"/>
   </joint>
   <link
     name="lbfoot">
@@ -789,6 +798,7 @@
       upper="3.14"
       effort="10.0"
       velocity="10.0" />
+    <dynamics damping="0.0" friction="0.1"/>
   </joint>
   <link
     name="rb2">
@@ -847,6 +857,7 @@
       upper="3.14"
       effort="10.0"
       velocity="10.0" />
+    <dynamics damping="0.0" friction="0.1"/>
   </joint>
   <link
     name="rb3">
@@ -905,6 +916,7 @@
       upper="3.14"
       effort="10.0"
       velocity="10.0" />
+    <dynamics damping="0.0" friction="0.1"/>
   </joint>
   <link
     name="rbfoot">
@@ -1105,7 +1117,7 @@
     <kd>1.0</kd>
     <mu1>0.8</mu1>    
     <mu2>0.8</mu2>  
-    <minDepth>0.002</minDepth>
+    <minDepth>0.001</minDepth>
     <maxVel>0</maxVel>
   </gazebo>
   <gazebo reference="rf1">
@@ -1123,7 +1135,7 @@
     <kd>1.0</kd>
     <mu1>0.8</mu1>    
     <mu2>0.8</mu2>  
-    <minDepth>0.002</minDepth>
+    <minDepth>0.001</minDepth>
     <maxVel>0</maxVel>
   </gazebo>
   <gazebo reference="lb1">
@@ -1141,7 +1153,7 @@
     <kd>1.0</kd>
     <mu1>0.8</mu1>    
     <mu2>0.8</mu2>  
-    <minDepth>0.002</minDepth>
+    <minDepth>0.001</minDepth>
     <maxVel>0</maxVel>
   </gazebo>
   <gazebo reference="rb1">
@@ -1159,7 +1171,7 @@
     <kd>1.0</kd>
     <mu1>0.8</mu1>    
     <mu2>0.8</mu2>  
-    <minDepth>0.002</minDepth>
+    <minDepth>0.001</minDepth>
     <maxVel>0</maxVel>
   </gazebo>
 </robot>

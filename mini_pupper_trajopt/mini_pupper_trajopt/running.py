@@ -35,6 +35,8 @@ class RunningOCPSolverFactory:
         baumgarte_time_step = 0.02
         robot = robotoc.Robot(self.path_to_urdf, robotoc.BaseJointType.FloatingBase, 
                               contact_frames, baumgarte_time_step)
+        robot.set_joint_velocity_limit(10.0*np.ones(robot.dimv()-6))
+        robot.set_joint_effort_limit(5.*np.ones(robot.dimv()-6))
 
         # create the cost function
         cost = robotoc.CostFunction()
@@ -121,18 +123,18 @@ class RunningOCPSolverFactory:
         constraints           = robotoc.Constraints()
         joint_position_lower  = robotoc.JointPositionLowerLimit(robot)
         joint_position_upper  = robotoc.JointPositionUpperLimit(robot)
-        # joint_velocity_lower  = robotoc.JointVelocityLowerLimit(robot)
-        # joint_velocity_upper  = robotoc.JointVelocityUpperLimit(robot)
-        # joint_torques_lower   = robotoc.JointTorquesLowerLimit(robot)
-        # joint_torques_upper   = robotoc.JointTorquesUpperLimit(robot)
-        mu = 1.5
+        joint_velocity_lower  = robotoc.JointVelocityLowerLimit(robot)
+        joint_velocity_upper  = robotoc.JointVelocityUpperLimit(robot)
+        joint_torques_lower   = robotoc.JointTorquesLowerLimit(robot)
+        joint_torques_upper   = robotoc.JointTorquesUpperLimit(robot)
+        mu = 0.8
         friction_cone         = robotoc.FrictionCone(robot, mu)
         constraints.push_back(joint_position_lower)
         constraints.push_back(joint_position_upper)
-        # constraints.push_back(joint_velocity_lower)
-        # constraints.push_back(joint_velocity_upper)
-        # constraints.push_back(joint_torques_lower)
-        # constraints.push_back(joint_torques_upper)
+        constraints.push_back(joint_velocity_lower)
+        constraints.push_back(joint_velocity_upper)
+        constraints.push_back(joint_torques_lower)
+        constraints.push_back(joint_torques_upper)
         constraints.push_back(friction_cone)
         constraints.set_barrier(1.0e-01)
 

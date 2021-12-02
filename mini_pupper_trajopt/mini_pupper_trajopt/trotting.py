@@ -8,8 +8,8 @@ class TrottingOCPSolverFactory:
     def __init__(self, path_to_urdf=config.PATH_TO_URDF):
         self.path_to_urdf = path_to_urdf 
         self.step_length = 0.04
-        self.step_height = 0.02
-        self.swing_time = 0.3
+        self.step_height = 0.03
+        self.swing_time = 0.25
         self.support_time = 0.01
         self.dt = 0.005
         self.t0 = self.support_time
@@ -75,6 +75,8 @@ class TrottingOCPSolverFactory:
         q0_3d_LH = robot.frame_position(LH_foot_id)
         q0_3d_RF = robot.frame_position(RF_foot_id)
         q0_3d_RH = robot.frame_position(RH_foot_id)
+        print(q0_3d_RH)
+
         LF_t0 = self.t0 + self.swing_time + self.support_time
         LH_t0 = self.t0
         RF_t0 = self.t0
@@ -123,7 +125,7 @@ class TrottingOCPSolverFactory:
         joint_velocity_upper  = robotoc.JointVelocityUpperLimit(robot)
         joint_torques_lower   = robotoc.JointTorquesLowerLimit(robot)
         joint_torques_upper   = robotoc.JointTorquesUpperLimit(robot)
-        mu = 0.4
+        mu = 0.8
         friction_cone         = robotoc.FrictionCone(robot, mu)
         constraints.push_back(joint_position_lower)
         constraints.push_back(joint_position_upper)
