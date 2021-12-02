@@ -48,7 +48,7 @@ You can then run a Gazebo simulation as `roslaunch mini_pupper_gazebo mini_puppe
 <strong>Remark</strong>: This simulation is different from the trajectory optimizer because the servo motors are assumed to have only the position interface.
 This is much closer to the real mini-pupper robot than the trajectory optimizer in which the torque interface is assumed.
 
-<img src="https://raw.githubusercontent.com/wiki/mayataka/mini_pupper_trajopt/images/mini_pupper_gazebo.gif" width="600"> 
+<img src="https://raw.githubusercontent.com/wiki/mayataka/mini_pupper_trajopt/images/mini_pupper_gazebo.gif" width="800"> 
 
 ## Summary for the Gazebo simulation
 1. Install `Pinocchio`, `robotoc`, and `meshcat-python`.

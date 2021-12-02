@@ -7,7 +7,7 @@ from . import config
 class RunningOCPSolverFactory:
     def __init__(self, path_to_urdf=config.PATH_TO_URDF):
         self.path_to_urdf = path_to_urdf 
-        self.step_length = 0.20
+        self.step_length = 0.18
         self.step_height = 0.05
         self.front_swing_time = 0.12
         self.hip_swing_time   = 0.13

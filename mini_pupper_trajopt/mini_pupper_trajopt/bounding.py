@@ -8,8 +8,8 @@ class BoundingOCPSolverFactory:
     def __init__(self, path_to_urdf=config.PATH_TO_URDF):
         self.path_to_urdf = path_to_urdf 
         self.step_length = 0.005
-        self.step_height = 0.025
-        self.swing_time = 0.1
+        self.step_height = 0.04
+        self.swing_time = 0.15
         self.support_time = 0.01
         self.dt = 0.005
         self.t0 = self.support_time
@@ -33,6 +33,8 @@ class BoundingOCPSolverFactory:
         baumgarte_time_step = 0.02
         robot = robotoc.Robot(self.path_to_urdf, robotoc.BaseJointType.FloatingBase, 
                               contact_frames, baumgarte_time_step)
+        robot.set_joint_velocity_limit(10.0*np.ones(robot.dimv()-6))
+        robot.set_joint_effort_limit(np.ones(robot.dimv()-6))
 
         # create the cost function
         cost = robotoc.CostFunction()
@@ -117,18 +119,18 @@ class BoundingOCPSolverFactory:
         constraints           = robotoc.Constraints()
         joint_position_lower  = robotoc.JointPositionLowerLimit(robot)
         joint_position_upper  = robotoc.JointPositionUpperLimit(robot)
-        # joint_velocity_lower  = robotoc.JointVelocityLowerLimit(robot)
-        # joint_velocity_upper  = robotoc.JointVelocityUpperLimit(robot)
-        # joint_torques_lower   = robotoc.JointTorquesLowerLimit(robot)
-        # joint_torques_upper   = robotoc.JointTorquesUpperLimit(robot)
-        mu = 1.5
+        joint_velocity_lower  = robotoc.JointVelocityLowerLimit(robot)
+        joint_velocity_upper  = robotoc.JointVelocityUpperLimit(robot)
+        joint_torques_lower   = robotoc.JointTorquesLowerLimit(robot)
+        joint_torques_upper   = robotoc.JointTorquesUpperLimit(robot)
+        mu = 0.8
         friction_cone         = robotoc.FrictionCone(robot, mu)
         constraints.push_back(joint_position_lower)
         constraints.push_back(joint_position_upper)
-        # constraints.push_back(joint_velocity_lower)
-        # constraints.push_back(joint_velocity_upper)
-        # constraints.push_back(joint_torques_lower)
-        # constraints.push_back(joint_torques_upper)
+        constraints.push_back(joint_velocity_lower)
+        constraints.push_back(joint_velocity_upper)
+        constraints.push_back(joint_torques_lower)
+        constraints.push_back(joint_torques_upper)
         constraints.push_back(friction_cone)
         constraints.set_barrier(1.0e-01)
 
