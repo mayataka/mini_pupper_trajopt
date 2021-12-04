@@ -1,5 +1,5 @@
-#ifndef MINI_PUPPER_CONTROLLER_HPP_
-#define MINI_PUPPER_CONTROLLER_HPP_
+#ifndef MINI_PUPPER_RUNNING_CONTROLLER_HPP_
+#define MINI_PUPPER_RUNNING_CONTROLLER_HPP_
 
 #include <string>
 #include <vector>
@@ -13,9 +13,9 @@
 
 namespace mini_pupper_trajopt {
 
-class MiniPupperController : public controller_interface::Controller<hardware_interface::PositionJointInterface> {
+class MiniPupperRunningController : public controller_interface::Controller<hardware_interface::PositionJointInterface> {
 public:
-  MiniPupperController();
+  MiniPupperRunningController();
   bool init(hardware_interface::PositionJointInterface* hardware, 
             ros::NodeHandle& node_handler) override;
   void starting(const ros::Time& time) override;
@@ -31,4 +31,4 @@ private:
 
 } // namespace mini_pupper_trajopt 
 
-#endif // MINI_PUPPER_CONTROLLER_HPP_ 
+#endif // MINI_PUPPER_RUNNING_CONTROLLER_HPP_ 

@@ -48,7 +48,7 @@
     args="pub /calibrated std_msgs/Bool true" />
 
   <group ns="/mini_pupper">
-    <rosparam file="$(find mini_pupper_gazebo)/config/mini_pupper_gazebo_controller.yaml" command="load"/>
+    <rosparam file="$(find mini_pupper_gazebo)/config/mini_pupper_gazebo_bounding_controller.yaml" command="load"/>
     <rosparam file="$(find mini_pupper_controller)/config/mini_pupper_controller.yaml" command="load"/>
     <node name="controller_spawner"
           pkg="controller_manager"
@@ -56,7 +56,7 @@
           respawn="false"
           output="screen"
           args="joint_state_controller
-                mini_pupper_controller"/>
+                mini_pupper_bounding_controller"/>
   </group>
   <node name="robot_state_publisher" pkg="robot_state_publisher" 
       type="robot_state_publisher" respawn="false" output="screen">

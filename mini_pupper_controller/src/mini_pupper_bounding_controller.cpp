@@ -1,4 +1,4 @@
-#include "mini_pupper_controller.hpp"
+#include "mini_pupper_bounding_controller.hpp"
 
 #include "ros/package.h"
 #include "pluginlib/class_list_macros.h"
@@ -8,12 +8,11 @@
 
 namespace mini_pupper_trajopt {
 
-MiniPupperController::MiniPupperController()
+MiniPupperBoundingController::MiniPupperBoundingController()
   : joint_handlers_(),
     q_cmd_() {
   const std::string path_to_log
-      = ros::package::getPath("mini_pupper_trajopt") + "/rsc/trotting/q.log";
-      // = ros::package::getPath("mini_pupper_trajopt") + "/rsc/running/q.log";
+      = ros::package::getPath("mini_pupper_trajopt") + "/rsc/bounding/q.log";
   std::ifstream log;
   log.open(path_to_log);
   std::string line;
@@ -31,7 +30,7 @@ MiniPupperController::MiniPupperController()
 }
 
 
-bool MiniPupperController::init(
+bool MiniPupperBoundingController::init(
     hardware_interface::PositionJointInterface* hardware, 
     ros::NodeHandle& node_handle) {
   const std::vector<std::string> joint_names = {
@@ -50,15 +49,15 @@ bool MiniPupperController::init(
 }
 
 
-void MiniPupperController::starting(const ros::Time& time) {
+void MiniPupperBoundingController::starting(const ros::Time& time) {
 }
 
 
-void MiniPupperController::stopping(const ros::Time& time) {
+void MiniPupperBoundingController::stopping(const ros::Time& time) {
 }
 
 
-void MiniPupperController::update(const ros::Time& time, 
+void MiniPupperBoundingController::update(const ros::Time& time, 
                                   const ros::Duration& period) { 
   const ros::Duration time_from_ctrl_start = ros::Time::now() - crtl_start_time_;
   int time_step = std::floor(time_from_ctrl_start.toSec() / 0.005); 
@@ -76,5 +75,5 @@ void MiniPupperController::update(const ros::Time& time,
 } // namespace mini_pupper_trajopt 
 
 
-PLUGINLIB_EXPORT_CLASS(mini_pupper_trajopt::MiniPupperController, 
+PLUGINLIB_EXPORT_CLASS(mini_pupper_trajopt::MiniPupperBoundingController, 
                        controller_interface::ControllerBase)

@@ -1,5 +1,73 @@
-mini_pupper_controller:
-  type: "mini_pupper_trajopt/MiniPupperController"
+mini_pupper_trotting_controller:
+  type: "mini_pupper_trajopt/MiniPupperTrottingController"
+  publish_rate: 1000
+  joints:
+    - base_lb1
+    - lb1_lb2
+    - lb2_lb3
+    - base_lf1
+    - lf1_lf2
+    - lf2_lf3
+    - base_rb1
+    - rb1_rb2
+    - rb2_rb3
+    - base_rf1
+    - rf1_rf2
+    - rf2_rf3
+
+mini_pupper_pacing_controller:
+  type: "mini_pupper_trajopt/MiniPupperPacingController"
+  publish_rate: 1000
+  joints:
+    - base_lb1
+    - lb1_lb2
+    - lb2_lb3
+    - base_lf1
+    - lf1_lf2
+    - lf2_lf3
+    - base_rb1
+    - rb1_rb2
+    - rb2_rb3
+    - base_rf1
+    - rf1_rf2
+    - rf2_rf3
+
+mini_pupper_bounding_controller:
+  type: "mini_pupper_trajopt/MiniPupperBoundingController"
+  publish_rate: 1000
+  joints:
+    - base_lb1
+    - lb1_lb2
+    - lb2_lb3
+    - base_lf1
+    - lf1_lf2
+    - lf2_lf3
+    - base_rb1
+    - rb1_rb2
+    - rb2_rb3
+    - base_rf1
+    - rf1_rf2
+    - rf2_rf3
+
+mini_pupper_jumping_controller:
+  type: "mini_pupper_trajopt/MiniPupperJumpingController"
+  publish_rate: 1000
+  joints:
+    - base_lb1
+    - lb1_lb2
+    - lb2_lb3
+    - base_lf1
+    - lf1_lf2
+    - lf2_lf3
+    - base_rb1
+    - rb1_rb2
+    - rb2_rb3
+    - base_rf1
+    - rf1_rf2
+    - rf2_rf3
+
+mini_pupper_running_controller:
+  type: "mini_pupper_trajopt/MiniPupperRunningController"
   publish_rate: 1000
   joints:
     - base_lb1

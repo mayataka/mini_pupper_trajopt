@@ -21,7 +21,11 @@ catkin_package(
 
 add_library(
   ${PROJECT_NAME} 
-  src/mini_pupper_controller.cpp
+  src/mini_pupper_trotting_controller.cpp
+  src/mini_pupper_pacing_controller.cpp
+  src/mini_pupper_bounding_controller.cpp
+  src/mini_pupper_jumping_controller.cpp
+  src/mini_pupper_running_controller.cpp
 )
 target_include_directories(
   ${PROJECT_NAME} 

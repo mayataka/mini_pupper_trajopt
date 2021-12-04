@@ -1,0 +1,18 @@
+joint_state_controller:
+  type: "joint_state_controller/JointStateController"
+  publish_rate: 250
+
+gazebo_ros_control:
+  pid_gains:
+    base_lb1:  { p: 5.0, d: 0.0, i: 0.1, i_clamp: 0.1, antiwindup: True }
+    lb1_lb2:   { p: 5.0, d: 0.0, i: 0.1, i_clamp: 0.1, antiwindup: True }
+    lb2_lb3:   { p: 5.0, d: 0.0, i: 0.1, i_clamp: 0.1, antiwindup: True }
+    base_lf1:  { p: 5.0, d: 0.0, i: 0.1, i_clamp: 0.1, antiwindup: True }
+    lf1_lf2:   { p: 5.0, d: 0.0, i: 0.1, i_clamp: 0.1, antiwindup: True }
+    lf2_lf3:   { p: 5.0, d: 0.0, i: 0.1, i_clamp: 0.1, antiwindup: True }
+    base_rb1:  { p: 5.0, d: 0.0, i: 0.1, i_clamp: 0.1, antiwindup: True }
+    rb1_rb2:   { p: 5.0, d: 0.0, i: 0.1, i_clamp: 0.1, antiwindup: True }
+    rb2_rb3:   { p: 5.0, d: 0.0, i: 0.1, i_clamp: 0.1, antiwindup: True }
+    base_rf1:  { p: 5.0, d: 0.0, i: 0.1, i_clamp: 0.1, antiwindup: True }
+    rf1_rf2:   { p: 5.0, d: 0.0, i: 0.1, i_clamp: 0.1, antiwindup: True }
+    rf2_rf3:   { p: 5.0, d: 0.0, i: 0.1, i_clamp: 0.1, antiwindup: True }

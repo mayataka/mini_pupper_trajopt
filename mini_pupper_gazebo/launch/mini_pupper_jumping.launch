@@ -1,0 +1,66 @@
+<launch>
+  <!-- Gazebo configurations-->
+  <arg name="debug" default="false"/>
+  <arg name="gui" default="true"/>
+  <arg name="paused" default="true"/>
+  <arg name="use_sim_time" default="true"/>
+  <arg name="headless" default="false"/>
+
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="debug" value="$(arg debug)" />
+    <arg name="gui" value="$(arg gui)" />
+    <arg name="paused" value="$(arg paused)"/>
+    <arg name="use_sim_time" value="$(arg use_sim_time)"/>
+    <arg name="headless" value="$(arg headless)"/>
+  </include>
+  <node
+    name="tf_footprint_base"
+    pkg="tf"
+    type="static_transform_publisher"
+    args="0 0 0.5 0 0 0 base_link base_footprint 40" />
+
+  <param name="robot_description"
+    command="$(find xacro)/xacro --inorder '$(find mini_pupper_description)/urdf/mini_pupper_description.urdf'"
+    />
+  <node
+    name="spawn_model"
+    pkg="gazebo_ros"
+    type="spawn_model"
+    args="-urdf -model mini_pupper -param robot_description 
+          -x 0.0 -y 0.0 -z 0.084
+          -J base_lf1 0.0
+          -J lf1_lf2  0.7 
+          -J lf2_lf3 -1.2
+          -J base_rf1 0.0
+          -J rf1_rf2  0.7 
+          -J rf2_rf3 -1.2
+          -J base_lb1 0.0
+          -J lb1_lb2  0.7 
+          -J lb2_lb3 -1.2
+          -J base_rb1 0.0
+          -J rb1_rb2  0.7 
+          -J rb2_rb3 -1.2"
+    output="screen" />
+  <node
+    name="fake_joint_calibration"
+    pkg="rostopic"
+    type="rostopic"
+    args="pub /calibrated std_msgs/Bool true" />
+
+  <group ns="/mini_pupper">
+    <rosparam file="$(find mini_pupper_gazebo)/config/mini_pupper_gazebo_jumping_controller.yaml" command="load"/>
+    <rosparam file="$(find mini_pupper_controller)/config/mini_pupper_controller.yaml" command="load"/>
+    <node name="controller_spawner"
+          pkg="controller_manager"
+          type="spawner" 
+          respawn="false"
+          output="screen"
+          args="joint_state_controller
+                mini_pupper_jumping_controller"/>
+  </group>
+  <node name="robot_state_publisher" pkg="robot_state_publisher" 
+      type="robot_state_publisher" respawn="false" output="screen">
+    <remap from="/joint_states" to="/mini_pupper/joint_states" />
+  </node>
+
+</launch>

@@ -25,6 +25,10 @@
   <exec_depend>mini_pupper_trajopt</exec_depend>
 
   <export>
-    <controller_interface plugin="${prefix}/controller_description.xml" />
+    <controller_interface plugin="${prefix}/trotting_controller_description.xml" />
+    <controller_interface plugin="${prefix}/pacing_controller_description.xml" />
+    <controller_interface plugin="${prefix}/bounding_controller_description.xml" />
+    <controller_interface plugin="${prefix}/jumping_controller_description.xml" />
+    <controller_interface plugin="${prefix}/running_controller_description.xml" />
   </export>
 </package>

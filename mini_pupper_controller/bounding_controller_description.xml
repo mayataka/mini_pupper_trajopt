@@ -1,5 +1,5 @@
 <library path="lib/libmini_pupper_controller">
-    <class name="mini_pupper_trajopt/MiniPupperController" type="mini_pupper_trajopt::MiniPupperController"
+    <class name="mini_pupper_trajopt/MiniPupperBoundingController" type="mini_pupper_trajopt::MiniPupperBoundingController"
     base_class_type="controller_interface::ControllerBase">
     <description>
     </description>

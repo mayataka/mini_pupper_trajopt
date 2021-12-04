@@ -1,0 +1,7 @@
+<library path="lib/libmini_pupper_controller">
+    <class name="mini_pupper_trajopt/MiniPupperRunningController" type="mini_pupper_trajopt::MiniPupperRunningController"
+    base_class_type="controller_interface::ControllerBase">
+    <description>
+    </description>
+  </class>
+</library>
