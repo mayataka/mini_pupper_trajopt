@@ -7,13 +7,13 @@ from . import config
 class PacingOCPSolverFactory:
     def __init__(self, path_to_urdf=config.PATH_TO_URDF):
         self.path_to_urdf = path_to_urdf 
-        self.step_length = 0.04
-        self.step_height = 0.04
-        self.swing_time = 0.15
+        self.step_length = 0.02
+        self.step_height = 0.03
+        self.swing_time = 0.14
         self.support_time = 0.01
         self.dt = 0.005
         self.t0 = self.support_time
-        self.cycle = 10
+        self.cycle = 20
         self.T = self.t0 + self.cycle*(2*self.support_time+2*self.swing_time)
         self.N = math.floor(self.T/self.dt) 
         self.nthreads = 4

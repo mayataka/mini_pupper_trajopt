@@ -42,7 +42,7 @@ Then the log file is generated at `mini_pupper_trajopt/rsc`, e.g., `mini_pupper_
 ## Deploying the trajectory to the mini-pupper controller
 After generating the log file of the optimized trajectory, you can install the log file via `catkin_make` in your workspace.
 That is, `catkin_make` command also installs `mini_pupper_trajopt/rsc/trotting/q.log`.
-You can then run a Gazebo simulation as `roslaunch mini_pupper_gazebo mini_pupper.launch`.
+You can then run a Gazebo simulation as `roslaunch mini_pupper_gazebo mini_pupper_trotting.launch`.
 
 
 <strong>Remark</strong>: This simulation is different from the trajectory optimizer because the servo motors are assumed to have only the position interface.
@@ -54,4 +54,4 @@ This is much closer to the real mini-pupper robot than the trajectory optimizer 
 1. Install `Pinocchio`, `robotoc`, and `meshcat-python`.
 2. Run `python3 trotting.py` at `mini_pupper_trajopt` directory.
 3. Run `catkin_make` at ROS workspace. This command also installs generated trajectory files, e.g., `mini_pupper_trajopt/rsc/trotting/q.log`.
-4. Launch Gazebo simulation as `roslaunch mini_pupper_gazebo mini_pupper.launch`
+4. Launch Gazebo simulation as `roslaunch mini_pupper_gazebo mini_pupper_trotting.launch`

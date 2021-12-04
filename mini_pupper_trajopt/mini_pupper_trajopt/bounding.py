@@ -13,7 +13,7 @@ class BoundingOCPSolverFactory:
         self.support_time = 0.01
         self.dt = 0.005
         self.t0 = self.support_time
-        self.cycle = 10
+        self.cycle = 20
         self.T = self.t0 + self.cycle*(2*self.support_time+2*self.swing_time)
         self.N = math.floor(self.T/self.dt) 
         self.nthreads = 4
