@@ -7,15 +7,18 @@ from . import config
 class RunningOCPSolverFactory:
     def __init__(self, path_to_urdf=config.PATH_TO_URDF):
         self.path_to_urdf = path_to_urdf 
-        self.step_length = 0.18
-        self.step_height = 0.05
+        self.step_length = 0.08
+        self.step_height = 0.06
         self.front_swing_time = 0.12
-        self.hip_swing_time   = 0.13
-        self.flying_time      = 0.07
+        self.hip_swing_time   = 0.12
+        self.flying_time      = 0.04
+        # self.front_swing_time = 0.12
+        # self.hip_swing_time   = 0.12
+        # self.flying_time      = 0.05
         self.running_time     = self.front_swing_time + self.hip_swing_time + self.flying_time
         self.dt = 0.005
         self.t0 = 0.5
-        self.cycle = 10
+        self.cycle = 20
         self.T = self.t0 + self.cycle*self.running_time + 2*self.dt
         self.N = math.floor(self.T/self.dt) 
         self.nthreads = 4
@@ -41,6 +44,8 @@ class RunningOCPSolverFactory:
         # create the cost function
         cost = robotoc.CostFunction()
         q_standing = config.q_standing
+        q_ref = q_standing.copy()
+        robot.normalize_configuration(q_ref)
         q_weight = np.array([0, 0, 0, 1.0, 1.0, 1.0, 
                             0.0001, 0.0001, 0.0001, 
                             0.0001, 0.0001, 0.0001,
@@ -61,7 +66,7 @@ class RunningOCPSolverFactory:
         dvi_weight = np.full(robot.dimv(), 1.0e-03) # penalty on the impulse change in the velocity
 
         config_cost = robotoc.ConfigurationSpaceCost(robot)
-        config_cost.set_q_ref(q_standing)
+        config_cost.set_q_ref(q_ref)
         config_cost.set_q_weight(q_weight)
         config_cost.set_qf_weight(q_weight)
         config_cost.set_qi_weight(qi_weight)
