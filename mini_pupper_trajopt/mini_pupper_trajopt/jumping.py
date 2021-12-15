@@ -72,35 +72,35 @@ class JumpingOCPSolverFactory:
         cost.push_back(config_cost)
 
         robot.forward_kinematics(q_standing)
-        q0_3d_LF = robot.frame_position(LF_foot_id)
-        q0_3d_LH = robot.frame_position(LH_foot_id)
-        q0_3d_RF = robot.frame_position(RF_foot_id)
-        q0_3d_RH = robot.frame_position(RH_foot_id)
+        x3d_LF = robot.frame_position(LF_foot_id)
+        x3d_LH = robot.frame_position(LH_foot_id)
+        x3d_RF = robot.frame_position(RF_foot_id)
+        x3d_RH = robot.frame_position(RH_foot_id)
 
-        com_ref0_flying_up = (q0_3d_LF + q0_3d_LH + q0_3d_RF + q0_3d_RH) / 4
+        com_ref0_flying_up = (x3d_LF + x3d_LH + x3d_RF + x3d_RH) / 4
         com_ref0_flying_up[2] = robot.com()[2]
-        v_com_ref_flying_up = np.array([(0.5*self.jump_length/self.flying_up_time), 0, (self.jump_height/self.flying_up_time)])
-        com_ref_flying_up = robotoc.PeriodicCoMRef(com_ref0_flying_up, v_com_ref_flying_up, 
+        vcom_ref_flying_up = np.array([(0.5*self.jump_length/self.flying_up_time), 0, (self.jump_height/self.flying_up_time)])
+        com_ref_flying_up = robotoc.PeriodicCoMRef(com_ref0_flying_up, vcom_ref_flying_up, 
                                                    self.t0+self.ground_time, self.flying_up_time, 
                                                    self.flying_down_time+2*self.ground_time, False)
         com_cost_flying_up = robotoc.TimeVaryingCoMCost(robot, com_ref_flying_up)
-        com_cost_flying_up.set_q_weight(np.full(3, 1.0e06))
+        com_cost_flying_up.set_com_weight(np.full(3, 1.0e06))
         cost.push_back(com_cost_flying_up)
 
-        com_ref0_landed = (q0_3d_LF + q0_3d_LH + q0_3d_RF + q0_3d_RH) / 4
+        com_ref0_landed = (x3d_LF + x3d_LH + x3d_RF + x3d_RH) / 4
         com_ref0_landed[0] += self.jump_length
         com_ref0_landed[2] = robot.com()[2]
-        v_com_ref_landed = np.zeros(3)
-        com_ref_landed = robotoc.PeriodicCoMRef(com_ref0_landed, v_com_ref_landed, 
+        vcom_ref_landed = np.zeros(3)
+        com_ref_landed = robotoc.PeriodicCoMRef(com_ref0_landed, vcom_ref_landed, 
                                                 self.t0+self.ground_time+self.flying_time, 
                                                 self.ground_time, 
                                                 self.ground_time+self.flying_time, False)
         com_cost_landed = robotoc.TimeVaryingCoMCost(robot, com_ref_landed)
-        com_cost_landed.set_q_weight(np.full(3, 1.0e06))
+        com_cost_landed.set_com_weight(np.full(3, 1.0e06))
         cost.push_back(com_cost_landed)
 
         # create the constraints
-        constraints           = robotoc.Constraints()
+        constraints           = robotoc.Constraints(barrier=1.0e-03)
         joint_position_lower  = robotoc.JointPositionLowerLimit(robot)
         joint_position_upper  = robotoc.JointPositionUpperLimit(robot)
         joint_velocity_lower  = robotoc.JointVelocityLowerLimit(robot)
@@ -116,13 +116,12 @@ class JumpingOCPSolverFactory:
         constraints.push_back(joint_torques_lower)
         constraints.push_back(joint_torques_upper)
         constraints.push_back(friction_cone)
-        constraints.set_barrier(1.0e-01)
 
         # create the contact sequence
         max_num_impulses = 1
         contact_sequence = robotoc.ContactSequence(robot, max_num_impulses)
 
-        contact_points = [q0_3d_LF, q0_3d_LH, q0_3d_RF, q0_3d_RH]
+        contact_points = [x3d_LF, x3d_LH, x3d_RF, x3d_RH]
         contact_status_standing = robot.create_contact_status()
         contact_status_standing.activate_contacts([0, 1, 2, 3])
         contact_status_standing.set_contact_points(contact_points)
@@ -140,8 +139,12 @@ class JumpingOCPSolverFactory:
         contact_sequence.push_back(contact_status_standing, 
                                    self.t0+self.ground_time+self.flying_time)
 
-        ocp_solver = robotoc.OCPSolver(robot, contact_sequence, cost, constraints, 
-                                       self.T, self.N, nthreads=self.nthreads)
+        ocp = robotoc.OCP(robot, cost, constraints, self.T, self.N, max_num_impulses)
+        solver_options = robotoc.SolverOptions()
+        solver_options.max_iter = 200
+        ocp_solver = robotoc.OCPSolver(ocp=ocp, contact_sequence=contact_sequence, 
+                                       solver_options=solver_options, 
+                                       nthreads=self.nthreads)
 
         t = 0.0
         q = q_standing

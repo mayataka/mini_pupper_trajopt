@@ -71,26 +71,26 @@ class TrottingOCPSolverFactory:
         cost.push_back(config_cost)
 
         robot.forward_kinematics(q_standing)
-        q0_3d_LF = robot.frame_position(LF_foot_id)
-        q0_3d_LH = robot.frame_position(LH_foot_id)
-        q0_3d_RF = robot.frame_position(RF_foot_id)
-        q0_3d_RH = robot.frame_position(RH_foot_id)
-        print(q0_3d_RH)
+        x3d_LF = robot.frame_position(LF_foot_id)
+        x3d_LH = robot.frame_position(LH_foot_id)
+        x3d_RF = robot.frame_position(RF_foot_id)
+        x3d_RH = robot.frame_position(RH_foot_id)
+        print(x3d_RH)
 
         LF_t0 = self.t0 + self.swing_time + self.support_time
         LH_t0 = self.t0
         RF_t0 = self.t0
         RH_t0 = self.t0 + self.swing_time + self.support_time
-        LF_foot_ref = robotoc.PeriodicFootTrackRef(q0_3d_LF, self.step_length, self.step_height, 
+        LF_foot_ref = robotoc.PeriodicFootTrackRef(x3d_LF, self.step_length, self.step_height, 
                                                    LF_t0, self.swing_time, 
                                                    self.swing_time+2*self.support_time, False)
-        LH_foot_ref = robotoc.PeriodicFootTrackRef(q0_3d_LH, self.step_length, self.step_height, 
+        LH_foot_ref = robotoc.PeriodicFootTrackRef(x3d_LH, self.step_length, self.step_height, 
                                                    LH_t0, self.swing_time, 
                                                    self.swing_time+2*self.support_time, True)
-        RF_foot_ref = robotoc.PeriodicFootTrackRef(q0_3d_RF, self.step_length, self.step_height, 
+        RF_foot_ref = robotoc.PeriodicFootTrackRef(x3d_RF, self.step_length, self.step_height, 
                                                    RF_t0, self.swing_time, 
                                                    self.swing_time+2*self.support_time, True)
-        RH_foot_ref = robotoc.PeriodicFootTrackRef(q0_3d_RH, self.step_length, self.step_height, 
+        RH_foot_ref = robotoc.PeriodicFootTrackRef(x3d_RH, self.step_length, self.step_height, 
                                                    RH_t0, self.swing_time, 
                                                    self.swing_time+2*self.support_time, False)
         LF_cost = robotoc.TimeVaryingTaskSpace3DCost(robot, LF_foot_id, LF_foot_ref)
@@ -98,27 +98,27 @@ class TrottingOCPSolverFactory:
         RF_cost = robotoc.TimeVaryingTaskSpace3DCost(robot, RF_foot_id, RF_foot_ref)
         RH_cost = robotoc.TimeVaryingTaskSpace3DCost(robot, RH_foot_id, RH_foot_ref)
         foot_track_weight = np.full(3, 1.0e06)
-        LF_cost.set_q_weight(foot_track_weight)
-        LH_cost.set_q_weight(foot_track_weight)
-        RF_cost.set_q_weight(foot_track_weight)
-        RH_cost.set_q_weight(foot_track_weight)
+        LF_cost.set_x3d_weight(foot_track_weight)
+        LH_cost.set_x3d_weight(foot_track_weight)
+        RF_cost.set_x3d_weight(foot_track_weight)
+        RH_cost.set_x3d_weight(foot_track_weight)
         cost.push_back(LF_cost)
         cost.push_back(LH_cost)
         cost.push_back(RF_cost)
         cost.push_back(RH_cost)
 
-        com_ref0 = (q0_3d_LF + q0_3d_LH + q0_3d_RF + q0_3d_RH) / 4
+        com_ref0 = (x3d_LF + x3d_LH + x3d_RF + x3d_RH) / 4
         com_ref0[2] = robot.com()[2]
-        v_com_ref = np.zeros(3)
-        v_com_ref[0] = 0.5 * self.step_length / self.swing_time
-        com_ref = robotoc.PeriodicCoMRef(com_ref0, v_com_ref, self.t0, self.swing_time, 
+        vcom_ref = np.zeros(3)
+        vcom_ref[0] = 0.5 * self.step_length / self.swing_time
+        com_ref = robotoc.PeriodicCoMRef(com_ref0, vcom_ref, self.t0, self.swing_time, 
                                          self.support_time, True)
         com_cost = robotoc.TimeVaryingCoMCost(robot, com_ref)
-        com_cost.set_q_weight(np.full(3, 1.0e06))
+        com_cost.set_com_weight(np.full(3, 1.0e06))
         cost.push_back(com_cost)
 
         # create the constraints
-        constraints           = robotoc.Constraints()
+        constraints           = robotoc.Constraints(barrier=1.0e-03)
         joint_position_lower  = robotoc.JointPositionLowerLimit(robot)
         joint_position_upper  = robotoc.JointPositionUpperLimit(robot)
         joint_velocity_lower  = robotoc.JointVelocityLowerLimit(robot)
@@ -134,13 +134,12 @@ class TrottingOCPSolverFactory:
         constraints.push_back(joint_torques_lower)
         constraints.push_back(joint_torques_upper)
         constraints.push_back(friction_cone)
-        constraints.set_barrier(1.0e-01)
 
         # create the contact sequence
         max_num_impulses = 2*self.cycle
         contact_sequence = robotoc.ContactSequence(robot, max_num_impulses)
 
-        contact_points = [q0_3d_LF, q0_3d_LH, q0_3d_RF, q0_3d_RH]
+        contact_points = [x3d_LF, x3d_LH, x3d_RF, x3d_RH]
         contact_status_standing = robot.create_contact_status()
         contact_status_standing.activate_contacts([0, 1, 2, 3])
         contact_status_standing.set_contact_points(contact_points)
@@ -188,8 +187,12 @@ class TrottingOCPSolverFactory:
             contact_sequence.push_back(contact_status_standing, 
                                        t1+2*self.swing_time+self.support_time)
 
-        ocp_solver = robotoc.OCPSolver(robot, contact_sequence, cost, constraints, 
-                                       self.T, self.N, nthreads=self.nthreads)
+        ocp = robotoc.OCP(robot, cost, constraints, self.T, self.N, max_num_impulses)
+        solver_options = robotoc.SolverOptions()
+        solver_options.max_iter = 200
+        ocp_solver = robotoc.OCPSolver(ocp=ocp, contact_sequence=contact_sequence, 
+                                       solver_options=solver_options, 
+                                       nthreads=self.nthreads)
 
         t = 0.0
         q = q_standing
@@ -213,8 +216,7 @@ if __name__ == '__main__':
     v = np.zeros(18)
     t = 0.
 
-    num_iteration = 50
-    robotoc.utils.benchmark.convergence(ocp_solver, t, q, v, num_iteration)
+    ocp_solver.solve(t, q, v)
 
     viewer = robotoc.utils.TrajectoryViewer(path_to_urdf=config.PATH_TO_URDF, 
                                             base_joint_type=robotoc.BaseJointType.FloatingBase,

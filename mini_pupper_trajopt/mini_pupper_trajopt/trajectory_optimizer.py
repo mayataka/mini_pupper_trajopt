@@ -23,8 +23,8 @@ class TrajectoryOptimizer:
 
     def solve(self, num_iteration=100):
         self.ocp_solver = self.ocp_solver_factory.create_ocp_solver()
-        robotoc.utils.benchmark.convergence(self.ocp_solver, self.t, self.q, 
-                                            self.v, num_iteration)
+        self.ocp_solver.solve(self.t, self.q, self.v)
+        print(self.ocp_solver.get_solver_statistics())
 
     def visualize(self, camera_tf_vec=[0.3, -2.5, -0.4], zoom=7.0):
         viewer = robotoc.utils.TrajectoryViewer(path_to_urdf=config.PATH_TO_URDF, 
