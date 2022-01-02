@@ -31,9 +31,10 @@ class JumpingOCPSolverFactory:
         RF_foot_id = config.RF_foot_id
         RH_foot_id = config.RH_foot_id
         contact_frames = [LF_foot_id, LH_foot_id, RF_foot_id, RH_foot_id] 
+        contact_types = [robotoc.ContactType.PointContact for i in contact_frames]
         baumgarte_time_step = 0.01
         robot = robotoc.Robot(self.path_to_urdf, robotoc.BaseJointType.FloatingBase, 
-                              contact_frames, baumgarte_time_step)
+                              contact_frames, contact_types, baumgarte_time_step)
         robot.set_joint_velocity_limit(10.0*np.ones(robot.dimv()-6))
         robot.set_joint_effort_limit(np.ones(robot.dimv()-6))
 
@@ -124,7 +125,7 @@ class JumpingOCPSolverFactory:
         contact_points = [x3d_LF, x3d_LH, x3d_RF, x3d_RH]
         contact_status_standing = robot.create_contact_status()
         contact_status_standing.activate_contacts([0, 1, 2, 3])
-        contact_status_standing.set_contact_points(contact_points)
+        contact_status_standing.set_contact_placements(contact_points)
         contact_sequence.init_contact_sequence(contact_status_standing)
 
         contact_status_flying = robot.create_contact_status()
@@ -135,7 +136,7 @@ class JumpingOCPSolverFactory:
         contact_points[1][0] += self.jump_length
         contact_points[2][0] += self.jump_length
         contact_points[3][0] += self.jump_length
-        contact_status_standing.set_contact_points(contact_points)
+        contact_status_standing.set_contact_placements(contact_points)
         contact_sequence.push_back(contact_status_standing, 
                                    self.t0+self.ground_time+self.flying_time)
 
